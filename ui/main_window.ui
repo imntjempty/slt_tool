@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1400</width>
+    <height>900</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>SLT 多机台测试上位机</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="rootLayout">
+    <item>
+     <layout class="QHBoxLayout" name="topBar">
+      <item>
+       <widget class="QPushButton" name="btn_all_start">
+        <property name="text">
+         <string>▶ 全部开始</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_all_pause">
+        <property name="text">
+         <string>⏸ 全部暂停</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_all_resume">
+        <property name="text">
+         <string>⏵ 全部继续</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_all_stop">
+        <property name="text">
+         <string>■ 全部停止</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="topSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbl_lang">
+        <property name="text">
+         <string>语言:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cmb_lang">
+        <item>
+         <property name="text">
+          <string>简体中文</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>English</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QSplitter" name="splitter_v">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="QTabWidget" name="tabs"/>
+      <widget class="QGroupBox" name="grp_log">
+       <property name="title">
+        <string>全局日志</string>
+       </property>
+       <layout class="QVBoxLayout" name="logLayout">
+        <item>
+         <widget class="QTextEdit" name="txt_log">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SkuTab</class>
+ <widget class="QWidget" name="SkuTab">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1100</width>
+    <height>720</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="rootLayout">
+   <item>
+    <widget class="QLabel" name="lbl_hint">
+     <property name="text">
+      <string>按 SKU 汇总各机台芯片测试统计（SKU 在机台面板中设置）</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="tbl_sku">
+     <column>
+      <property name="text">
+       <string>SKU</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>芯片总数</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>BIN0 良品</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>BIN1 不良</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>BIN2 中止</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>良率</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FirmwareTab</class>
+ <widget class="QWidget" name="FirmwareTab">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1100</width>
+    <height>720</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="rootLayout">
+   <item>
+    <layout class="QHBoxLayout" name="selRow">
+     <item>
+      <widget class="QLabel" name="lbl_stations">
+       <property name="text">
+        <string>目标机台:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="list_stations"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbl_fw_type">
+       <property name="text">
+        <string>固件类型:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cmb_fw_type">
+       <item>
+        <property name="text">
+         <string>Bootloader</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Kernel</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Rootfs</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Application</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbl_fw_file">
+       <property name="text">
+        <string>固件文件:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="le_fw_path">
+       <property name="placeholderText">
+        <string>选择要烧录的固件文件...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_browse">
+       <property name="text">
+        <string>浏览...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="fwInfoRow">
+     <item>
+      <widget class="QLabel" name="lbl_fw_ver">
+       <property name="text">
+        <string>固件版本:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="le_fw_ver">
+       <property name="placeholderText">
+        <string>自动从文件名识别，可手动填写</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="fwVerSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="ctlRow">
+     <item>
+      <widget class="QPushButton" name="btn_fw_start">
+       <property name="text">
+        <string>🔥 开始烧录</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_fw_stop">
+       <property name="text">
+        <string>■ 停止</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbl_fw_prog">
+       <property name="text">
+        <string>进度:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="progress_fw"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbl_fw_status">
+       <property name="text">
+        <string>空闲</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="ctlSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grp_fw_log">
+     <property name="title">
+      <string>烧录日志</string>
+     </property>
+     <layout class="QVBoxLayout" name="fwLogLayout">
+      <item>
+       <widget class="QTextEdit" name="txt_fw_log">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
