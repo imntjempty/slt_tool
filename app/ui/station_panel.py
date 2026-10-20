@@ -36,6 +36,8 @@ class StationPanel(QWidget):
         self._loop_has_fail = False
         self._loop_has_abort = False
         self._current_loop = 0
+        self._chip_pass = 0
+        self._chip_fail = 0
         self.last_summary = None
         self._load_ui()
         self._setup_conns()
@@ -130,6 +132,13 @@ class StationPanel(QWidget):
         for b in (self.btn_start, self.btn_pause, self.btn_resume, self.btn_stop):
             b.setSizePolicy(_QSizePolicy.Expanding, _QSizePolicy.Fixed)
         self.lbl_cur.setStyleSheet("font-weight:bold;")
+        # 进度条：绿色 chunk + 边框，避免默认白色/无颜色
+        self.progress_bar.setStyleSheet(
+            f"QProgressBar {{ border:1px solid #bdc3c7; border-radius:{5*sc:.0f}px;"
+            f" text-align:center; background:#ecf0f1; color:#2c3e50;"
+            f" font-weight:bold; }}"
+            f"QProgressBar::chunk {{ background:qlineargradient(x1:0,y1:0,x2:1,y2:0,"
+            f" stop:0 #27ae60, stop:1 #2ecc71); border-radius:{5*sc:.0f}px; }}")
         # 左右用 stretch 而非固定像素，随窗口自适应：测试项:结果表 = 1:2
         self.midSplitter.setStretchFactor(0, 1)
         self.midSplitter.setStretchFactor(1, 2)
@@ -253,10 +262,16 @@ class StationPanel(QWidget):
             self.worker = None
 
     # ---- 信号处理 ----
+    def _update_progress_text(self):
+        self.progress_bar.setFormat(
+            T("%p%  通过={0} 失败={1}", "%p%  pass={0} fail={1}").format(
+                self._chip_pass, self._chip_fail))
+
     def _on_prog(self, cur, total):
         self.progress_bar.setMaximum(total)
         self.progress_bar.setValue(cur)
         self.lbl_cur.setText(f"[{cur}/{total}]")
+        self._update_progress_text()
 
     def _on_result(self, cid, ok, err, loop=1):
         desc = DESC_MAP.get(cid, cid)
@@ -274,11 +289,18 @@ class StationPanel(QWidget):
             self._current_loop = loop
             self._loop_has_fail = False
             self._loop_has_abort = False
+            self._chip_pass = 0
+            self._chip_fail = 0
         if not ok:
             if err == "ABORTED":
                 self._loop_has_abort = True
             else:
                 self._loop_has_fail = True
+        if ok:
+            self._chip_pass += 1
+        elif err != "ABORTED":
+            self._chip_fail += 1
+        self._update_progress_text()
 
         r = self.tbl_results.rowCount()
         self.tbl_results.insertRow(r)
@@ -296,10 +318,14 @@ class StationPanel(QWidget):
             self.bin_counts[BIN_ABORT] += 1
         else:
             self.bin_counts[BIN_FAIL] += 1
-        for b, lbl in self.bin_labels.items():
-            lbl.setText(str(self.bin_counts[b]))
 
         self._emit_status(cid, running=True)
+
+    def _update_bin_labels(self):
+        """BIN0/1/2 统计按芯片级（chip_bin）显示，与全局口径一致。"""
+        self.bin_labels[BIN_PASS].setText(str(self.chip_bin["bin0"]))
+        self.bin_labels[BIN_FAIL].setText(str(self.chip_bin["bin1"]))
+        self.bin_labels[BIN_ABORT].setText(str(self.chip_bin["bin2"]))
 
     @staticmethod
     def _item(text):
@@ -314,6 +340,7 @@ class StationPanel(QWidget):
             self.chip_bin["bin1"] += 1
         else:
             self.chip_bin["bin0"] += 1
+        self._update_bin_labels()
 
     def _emit_status(self, current, running):
         self.status_changed.emit(self.station_name, {
@@ -355,4 +382,7 @@ class StationPanel(QWidget):
         if self._current_loop > 0:
             self._close_chip_bin()
             self._current_loop = 0
+        self._chip_pass = 0
+        self._chip_fail = 0
+        self._update_progress_text()
         self._emit_status("--", running=False)

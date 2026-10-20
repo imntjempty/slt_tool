@@ -125,6 +125,14 @@ class MainWindow(QMainWindow):
 
     # ---- 全部开始 / 停止 ----
     def _start_all(self):
+        connected = [name for name, sp in self.stations.items()
+                     if sp.p_board.channel.connected]
+        if not connected:
+            QMessageBox.warning(
+                self, T("提示", "Info"),
+                T("所有机台测试板均未连接，无法开始测试!\n请先在各机台页建立连接。",
+                  "All stations disconnected, cannot start!\nConnect boards first."))
+            return
         for name, sp in self.stations.items():
             if sp.p_board.channel.connected:
                 sp.start_test()

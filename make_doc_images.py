@@ -307,3 +307,72 @@ for i in range(n):
 img = img.resize((W, H), Image.LANCZOS)
 img.save(f"{OUT}/slt_flow.png")
 print("saved flow", img.size)
+
+# ============================================================
+# Fig 4: 下位机测试框架架构
+# ============================================================
+W, H = 1500, 960
+img = Image.new("RGB", (W*S, H*S), WHITE)
+d = ImageDraw.Draw(img)
+
+center_text(d, W/2*S, 42*S, "SLT 下位机测试框架架构", f_title, INK)
+
+# upper PC
+pc = [90, 75, 1410, 165]
+rrect(d, [x*S for x in pc], 12, fill=LGREY, outline=BLUE, width=3*S)
+center_text(d, (pc[0]+pc[2])/2*S, (pc[1]+pc[3])/2*S,
+            "上位机 PC（PyQt5 多机台）：下发 TEST_RUN_ALL / FW_* 并接收结果", f_box, BLUE)
+
+# down arrow
+down_arrow(W/2, 165, 235, BLUE)
+center_text(d, W/2*S, 200*S, "TCP:5001  NDJSON 协议", f_small, BLUE)
+
+# daemon outer box
+dm = [120, 235, 1380, 700]
+rrect(d, [x*S for x in dm], 16, fill=LGREY, outline=GREEN, width=3*S)
+center_text(d, (dm[0]+dm[2])/2*S, 258*S,
+            "下位机 Daemon（slt_board_daemon.py · 运行于 DUT Linux 板）", f_h2, GREEN)
+
+# inner modules row 1
+mh2 = 120; mw2 = 380; mx0 = dm[0]+24; my0 = 285
+mods = [
+    ("TCP Server", "listen :5001\nrecv → handle_cmd"),
+    ("测试注册表 TESTS", "@register_test\ncase_id → func"),
+    ("批量执行 run_batch", "TEST_RUN_ALL\n本地排队·崩溃续跑"),
+]
+for i, (t, dsc) in enumerate(mods):
+    bx = [mx0 + i*(mw2+20), my0, mx0 + i*(mw2+20)+mw2, my0+mh2]
+    rrect(d, [x*S for x in bx], 10, fill=LBLUE, outline=BLUE, width=2*S)
+    center_text(d, (bx[0]+bx[2])/2*S, (bx[1]+28)*S, t, f_box, BLUE)
+    for k, ln in enumerate(dsc.split("\n")):
+        center_text(d, (bx[0]+bx[2])/2*S, (bx[1]+60+k*30)*S, ln, f_body)
+
+# inner modules row 2
+my1 = my0 + mh2 + 16
+mods2 = [
+    ("状态机 STATE / CURRENT_TEST", "IDLE ↔ RUNNING\nstop 标志 · 中止判定"),
+    ("固件接收 fw_state", "FW_BEGIN / CHUNK / END\n落盘 /tmp/slt_fw_*.bin"),
+    ("结果上报", "TEST_STARTED / DONE\nTEST_BATCH_DONE"),
+]
+for i, (t, dsc) in enumerate(mods2):
+    bx = [mx0 + i*(mw2+20), my1, mx0 + i*(mw2+20)+mw2, my1+mh2]
+    rrect(d, [x*S for x in bx], 10, fill=LBLUE, outline=BLUE, width=2*S)
+    center_text(d, (bx[0]+bx[2])/2*S, (bx[1]+28)*S, t, f_box, BLUE)
+    for k, ln in enumerate(dsc.split("\n")):
+        center_text(d, (bx[0]+bx[2])/2*S, (bx[1]+60+k*30)*S, ln, f_body)
+
+# test case groups box (bottom)
+grp = [120, 730, 1380, 885]
+rrect(d, [x*S for x in grp], 12, fill=WHITE, outline=INK, width=3*S)
+center_text(d, (grp[0]+grp[2])/2*S, 752*S, "已注册测试用例（64 项，按分组）", f_box)
+center_text(d, (grp[0]+grp[2])/2*S, 792*S,
+            "MBIST · FirmwareBoot · Low-speedIO · DDR · PCIe · Interrupt · RAS · Security · Stability · PowerThermal",
+            f_body, MGREY)
+center_text(d, (grp[0]+grp[2])/2*S, 830*S,
+            "上位机通过 TEST_LIST 获取用例列表，勾选后经 TEST_RUN_ALL 一次性下发", f_small, MGREY)
+center_text(d, (grp[0]+grp[2])/2*S, 862*S,
+            "测试全部结束后发 TEST_BATCH_DONE {pass, fail, abort}", f_small, MGREY)
+
+img = img.resize((W, H), Image.LANCZOS)
+img.save(f"{OUT}/slt_daemon_arch.png")
+print("saved daemon_arch", img.size)

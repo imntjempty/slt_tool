@@ -22,6 +22,18 @@ for name in required_main:
     assert hasattr(win, name), f"主窗口缺控件 {name}"
 print("[OK] 主窗口控件齐全")
 
+# 1a. 全部机台未连接时弹窗提示
+from PyQt5.QtWidgets import QMessageBox as _QMB
+_warned = []
+_orig_warning = _QMB.warning
+_QMB.warning = lambda *a, **k: _warned.append(k)
+for _nm, _sp in win.stations.items():
+    _sp.p_board.channel.connected = False
+win._start_all()
+_QMB.warning = _orig_warning
+assert len(_warned) == 1, f"全部未连接应弹窗, 实际 {len(_warned)}"
+print("[OK] 全部机台未连接弹窗提示 正常")
+
 # 1b. 总览全局统计控件
 dash = win.dashboard
 for name in ["grp_global", "val_g_chips", "val_g_bin0", "val_g_bin1", "val_g_bin2", "val_g_yield"]:
@@ -51,6 +63,29 @@ assert fw._get_selected() == ["机台 1"], fw._get_selected()
 assert fw._detect_version("/x/boot_v1.2.3.bin") == "1.2.3", fw._detect_version("/x/boot_v1.2.3.bin")
 assert hasattr(fw, "le_fw_ver"), "缺固件版本输入框"
 print("[OK] 固件Tab 复选框选中 + 版本识别 正常")
+
+# 1f. 固件 Tab 连接接口选择 + 连接状态
+for name in ["cmb_fw_conn_mode", "le_fw_ip", "sp_fw_port", "btn_fw_conn",
+             "lbl_fw_conn_status"]:
+    assert hasattr(fw, name), f"固件连接缺控件 {name}"
+assert fw.cmb_fw_conn_mode.currentText() == "仿真"
+assert "仿真" in fw.lbl_fw_conn_status.text(), fw.lbl_fw_conn_status.text()
+# 临时起一个下位机 daemon，验证 TCP 连接状态
+from slt_board_daemon import SLTBoardDaemon
+import threading as _th
+import time as _t
+_d = SLTBoardDaemon("127.0.0.1", 5010)
+_th.Thread(target=_d.serve, daemon=True).start()
+_t.sleep(0.3)
+fw.list_stations.item(0).setCheckState(_Qt.Unchecked)   # 取消机台1
+fw.list_stations.item(5).setCheckState(_Qt.Checked)     # 机台6
+fw.sp_fw_port.setValue(5010)
+fw.cmb_fw_conn_mode.setCurrentIndex(1)
+assert not fw.le_fw_ip.isHidden(), "TCP 模式应显示 IP"
+fw._toggle_conn()
+assert fw.fw_channels["机台 6"].connected, "机台6 应已连接"
+assert "已连接" in fw.lbl_fw_conn_status.text(), fw.lbl_fw_conn_status.text()
+print(f"[OK] 固件连接接口选择 + 连接状态: {fw.lbl_fw_conn_status.text()}")
 
 # 1d. SKU 聚合逻辑
 win.stations["机台 1"].cmb_sku.setCurrentText("SKU-A")
@@ -89,7 +124,9 @@ st.start_test()
 st.worker.wait(20000)
 for _ in range(20):
     app.processEvents()
-print(f"[OK] 测试结束，结果行数={st.tbl_results.rowCount()}, BIN0={st.bin_lbl_pass.text()}")
+assert "通过" in st.progress_bar.format() or "pass" in st.progress_bar.format(), st.progress_bar.format()
+print(f"[OK] 测试结束，结果行数={st.tbl_results.rowCount()}, BIN0={st.bin_lbl_pass.text()}, "
+      f"进度格式={st.progress_bar.format()}")
 
 # 5. 总览更新
 dash = win.dashboard

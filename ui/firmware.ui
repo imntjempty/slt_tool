@@ -12,6 +12,92 @@
   </property>
   <layout class="QVBoxLayout" name="rootLayout">
    <item>
+    <layout class="QHBoxLayout" name="connRow">
+     <item>
+      <widget class="QLabel" name="lbl_fw_conn">
+       <property name="text">
+        <string>固件连接:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cmb_fw_conn_mode">
+       <item>
+        <property name="text">
+         <string>仿真</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>TCP</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbl_fw_ip">
+       <property name="text">
+        <string>IP:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="le_fw_ip">
+       <property name="text">
+        <string>127.0.0.1</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbl_fw_port">
+       <property name="text">
+        <string>端口:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="sp_fw_port">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>65535</number>
+       </property>
+       <property name="value">
+        <number>5001</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_fw_conn">
+       <property name="text">
+        <string>连接所选机台</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbl_fw_conn_status">
+       <property name="text">
+        <string>● 未连接</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="connSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="selRow">
      <item>
       <widget class="QLabel" name="lbl_stations">
